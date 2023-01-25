@@ -2,20 +2,26 @@ package org.file.system.event;
 
 import lombok.SneakyThrows;
 
+import java.io.IOException;
 import java.nio.file.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FileCreationListener {
+public class DirectoryObserver {
 	private final WatchService watchService;
 	private final List<Listener> listeners = new ArrayList<>();
-	@SneakyThrows
-	public FileCreationListener(Path toWatch) {
-		this.watchService = FileSystems.getDefault()
-				.newWatchService();
-		toWatch.register(watchService, StandardWatchEventKinds.ENTRY_CREATE);
+
+	public DirectoryObserver(Path toWatch){
+		try {
+			this.watchService = FileSystems.getDefault()
+					.newWatchService();
+			toWatch.register(watchService, StandardWatchEventKinds.ENTRY_CREATE);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
-	public void startListening() {
+	public void startObserving() throws InterruptedException {
 		Thread thread = new Thread(() -> {
 			while (true) {
 				try {
@@ -23,7 +29,7 @@ public class FileCreationListener {
 					for (WatchEvent<?> event : key.pollEvents()) {
 						if (event.kind() == StandardWatchEventKinds.ENTRY_CREATE) {
 							Path file = (Path) event.context();
-							notifyListeners(new Event(event, file, new ));
+							notifyListeners(new Event(event, file, LocalDateTime.now()));
 						}
 					}
 					key.reset();
@@ -33,6 +39,7 @@ public class FileCreationListener {
 			}
 		});
 		thread.start();
+		thread.join();
 	}
 
 	public void addListener(Listener listener) {

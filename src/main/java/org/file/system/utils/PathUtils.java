@@ -1,17 +1,24 @@
-package org.file.system.commons;
+package org.file.system.utils;
 
-public class PathCommon {
-	public static String substringAfterLast(String str, String separator) {
-		if (str == null || str.isEmpty()) {
-			return str;
+import org.file.system.type.FileType;
+
+import java.nio.file.Path;
+
+public class PathUtils {
+	public static FileType getFileExtension(Path path) {
+		String fileName = path.getFileName()
+				.toString();
+		String extension = fileName.substring(fileName.lastIndexOf(".") + 1);
+		switch (extension.toLowerCase()) {
+			case "xml" -> {
+				return FileType.XML;
+			}
+			case "jar" -> {
+				return FileType.JAR;
+			}
+			default -> {
+				return FileType.OTHER;
+			}
 		}
-		if (separator == null) {
-			return "";
-		}
-		int pos = str.lastIndexOf(separator);
-		if (pos == -1 || pos == str.length() - separator.length()) {
-			return "";
-		}
-		return str.substring(pos + separator.length());
 	}
 }

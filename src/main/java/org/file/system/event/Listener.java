@@ -1,5 +1,5 @@
-package org.file.system;
+package org.file.system.event;
 
 public interface Listener {
-	void onEvent();
+	void onEvent(Event event);
 }

@@ -1,7 +1,9 @@
-package org.file.system;
+package org.file.system.manager;
 
 import lombok.Getter;
 import lombok.extern.java.Log;
+import org.file.system.strategy.jar.JarFileMoveStrategy;
+import org.file.system.strategy.xml.XMLFileMoveStrategy;
 
 @Log
 public class FileManagerFactory {
@@ -12,15 +14,11 @@ public class FileManagerFactory {
 		log.info("FileManagerFactory created");
 	}
 
-	public static FileManager createXMLFileManager() {
+	public FileManager createXMLFileManager() {
 		return new FileManager(new XMLFileMoveStrategy());
 	}
 
-	public static FileManager createJarFileManager() {
+	public FileManager createJarFileManager() {
 		return new FileManager(new JarFileMoveStrategy());
-	}
-
-	public static FileManager createDefaultFileManager() {
-		return new FileManager(filePath -> System.out.println("File " + filePath + " was moved"));
 	}
 }

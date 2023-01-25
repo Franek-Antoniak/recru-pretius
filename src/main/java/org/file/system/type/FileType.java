@@ -1,2 +1,5 @@
-package org.file.system.type;public class FileType {
+package org.file.system.type;
+
+public enum FileType {
+	XML, JAR, OTHER
 }
